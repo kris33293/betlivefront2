@@ -1,7 +1,6 @@
 package com.betlive.front;
 
-import com.betlive.front.domain.Bet;
-import com.betlive.front.domain.Type;
+import com.betlive.front.domain.*;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
 
 @PageTitle("BetLive v1")
 @Route("")
@@ -22,26 +23,48 @@ public class VaadinUI extends VerticalLayout {
 
     JsonService service;
 
+    Button home = new Button("Home",this::home);
+
+    Button draw = new Button("Draw",this::draw);
+
+    Button away = new Button("Away");
+
+    HorizontalLayout typeGrid = new HorizontalLayout(
+            home,draw,away
+    );
+
+    Grid<Type> betslip = new Grid<>();
+    Grid<Bet> bets = new Grid<>();
+    private Grid<User> userGrid = new Grid<>();
+
+    private Grid<Ticket> userTicketsGrid = new Grid<>();
+
     private int typeId;
     private String homeTeam,awayTeam,eventDate;
     private Double oddDraw,oddHome,oddAway;
 
+    Button availableBets = new Button("Available Bets", this::showBets);
+
+    Button user = new Button("User", this::user);
+
+    HorizontalLayout barLayout = new HorizontalLayout(
+            availableBets,user
+    );
 
     public VaadinUI(JsonService service) {
     this.service = service;
 
-        Button home = new Button("Home",this::home);
 
-        Button draw = new Button("Draw");
+        userGrid.addColumn(user1 -> user1.getUserName()).setFlexGrow(1).setHeader("Username");
+        userGrid.addColumn(user1 -> user1.getBalance()).setFlexGrow(1).setHeader("Balance");
+        userGrid.setVisible(false);
 
-        Button away = new Button("Away");
+        userTicketsGrid.addColumn(user -> user.getTicketStatus()).setFlexGrow(1).setHeader("Ticket Status");
+        userTicketsGrid.addColumn(user -> user.getToWin()).setFlexGrow(1).setHeader("To Win");
+        userTicketsGrid.addColumn(user -> user.getTypes()).setFlexGrow(1).setHeader("Types");
+        userTicketsGrid.setVisible(false);
 
-        HorizontalLayout typeGrid = new HorizontalLayout(
-                home,draw,away
-        );
 
-        Grid<Type> betslip = new Grid<>();
-        Grid<Bet> bets = new Grid<>();
 
         bets.addColumn(bet -> bet.getHomeTeam()).setFlexGrow(1).setHeader("Home Team");
         bets.addColumn(bet -> bet.getAwayTeam()).setFlexGrow(1).setHeader("Away Team");
@@ -72,19 +95,43 @@ public class VaadinUI extends VerticalLayout {
         betslip.addColumn(type -> type.getAwayTeam()).setFlexGrow(1).setHeader("Away Team");
         betslip.addColumn(type -> type.getOdd()).setFlexGrow(1).setHeader("Odd");
 
-        betslip.setItems(service.getAllTypesFromBetslip().getTypes());
+     //   betslip.setItems(service.getAllTypesFromBetslip());
+        userGrid.setItems(service.getAllUsers());
         bets.setItems(service.getAllBets());
-        add(bets,typeGrid,betslip);
+        add(barLayout,bets,typeGrid,betslip,userGrid,userTicketsGrid);
 
 
+    }
+
+    private void user(ClickEvent clickEvent) {
+        bets.setVisible(false);
+        betslip.setVisible(false);
+        typeGrid.setVisible(false);
+        userGrid.setVisible(true);
+        userTicketsGrid.setVisible(true);
+
+    }
+
+    private void showBets(ClickEvent clickEvent) {
+        bets.setVisible(true);
+        betslip.setVisible(true);
+        typeGrid.setVisible(true);
+        userGrid.setVisible(false);
+        userTicketsGrid.setVisible(false);
+    }
+
+
+    private void draw(ClickEvent clickEvent) {
+        service.addTypeToBetslip(1);
     }
 
 
     public void home(ClickEvent clickEvent) {
         typeValue(typeId,homeTeam,awayTeam,eventDate,oddHome,"HOME_WIN");
+
     }
 
-    public void typeValue(int typeId, String homeTeam, String awayTeam, String eventDate, Double odd,String yourType){
+    public Type typeValue(int typeId, String homeTeam, String awayTeam, String eventDate, Double odd,String yourType){
         Type type = new Type();
         type.setTypeId(typeId);
         type.setHomeTeam(homeTeam);
@@ -92,8 +139,12 @@ public class VaadinUI extends VerticalLayout {
         type.setEventDate(eventDate);
         type.setOdd(odd);
         type.setYourType(yourType);
+        Set<Betslip> betslips = new HashSet<>();
+        type.setBetslips(betslips);
+        Set<Ticket> tickets = new HashSet<>();
+        type.setTickets(tickets);
         Type createdType = service.createType(type);
-        service.addTypeToBetslip(createdType.getTypeId());
+        return createdType;
     }
 
 }
