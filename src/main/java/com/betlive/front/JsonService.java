@@ -42,7 +42,7 @@ public class JsonService {
 
     public List<Type> getAllTypesFromBetslip() {
         targetBetslip = client.target(
-                "http://localhost:8080/v1/betslip/getAllTypes");
+                "http://localhost:8080/v1/betslip/getAllTypes").queryParam("Content-Type","application/json");
         return  targetBetslip.request(MediaType.APPLICATION_JSON)
                 .get(Response.class)
                 .readEntity(new GenericType<List<Type>>() {

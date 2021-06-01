@@ -95,7 +95,7 @@ public class VaadinUI extends VerticalLayout {
         betslip.addColumn(type -> type.getAwayTeam()).setFlexGrow(1).setHeader("Away Team");
         betslip.addColumn(type -> type.getOdd()).setFlexGrow(1).setHeader("Odd");
 
-     //   betslip.setItems(service.getAllTypesFromBetslip());
+        betslip.setItems(service.getAllTypesFromBetslip());
         userGrid.setItems(service.getAllUsers());
         bets.setItems(service.getAllBets());
         add(barLayout,bets,typeGrid,betslip,userGrid,userTicketsGrid);

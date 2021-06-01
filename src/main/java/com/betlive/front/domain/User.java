@@ -8,7 +8,7 @@ public class User {
     private int userId;
     private String userName;
     private BigDecimal balance;
-    private List<Ticket> ticekts;
+    private List<Ticket> tickets;
     private List<Betslip> betslips;
 
     public int getUserId() {
@@ -35,11 +35,19 @@ public class User {
         this.balance = balance;
     }
 
-    public List<Ticket> getTicekts() {
-        return ticekts;
+    public List<Ticket> getTickets() {
+        return tickets;
     }
 
-    public void setTicekts(List<Ticket> ticekts) {
-        this.ticekts = ticekts;
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
+    }
+
+    public void setBetslips(List<Betslip> betslips) {
+        this.betslips = betslips;
+    }
+
+    public List<Betslip> getBetslips() {
+        return betslips;
     }
 }

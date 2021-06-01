@@ -13,7 +13,6 @@ public class Type {
     Set<Betslip> betslips;
     Set<Ticket> tickets;
 
-
     public int getTypeId() {
         return typeId;
     }
