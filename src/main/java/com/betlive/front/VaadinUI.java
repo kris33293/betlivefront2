@@ -110,7 +110,7 @@ public class VaadinUI extends VerticalLayout {
 
         if (a==0){
             service.createUser();
-            a++;
+            a=a+1;
         }
 
 
