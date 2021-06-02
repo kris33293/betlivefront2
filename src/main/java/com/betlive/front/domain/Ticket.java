@@ -1,14 +1,16 @@
 package com.betlive.front.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Ticket {
 
     private int ticketId;
     private List<Type> types;
-    private double totdalOdds;
-    private double totdalStake;
-    private double toWin;
+    private User user;
+    private BigDecimal totalOdds;
+    private BigDecimal totalStake;
+    private BigDecimal toWin;
     private String ticketStatus;
     private Betslip betslip;
 
@@ -28,27 +30,35 @@ public class Ticket {
         this.types = types;
     }
 
-    public double getTotdalOdds() {
-        return totdalOdds;
+    public User getUser() {
+        return user;
     }
 
-    public void setTotdalOdds(double totdalOdds) {
-        this.totdalOdds = totdalOdds;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public double getTotdalStake() {
-        return totdalStake;
+    public BigDecimal getTotalOdds() {
+        return totalOdds;
     }
 
-    public void setTotdalStake(double totdalStake) {
-        this.totdalStake = totdalStake;
+    public void setTotalOdds(BigDecimal totalOdds) {
+        this.totalOdds = totalOdds;
     }
 
-    public double getToWin() {
+    public BigDecimal getTotalStake() {
+        return totalStake;
+    }
+
+    public void setTotalStake(BigDecimal totalStake) {
+        this.totalStake = totalStake;
+    }
+
+    public BigDecimal getToWin() {
         return toWin;
     }
 
-    public void setToWin(double toWin) {
+    public void setToWin(BigDecimal toWin) {
         this.toWin = toWin;
     }
 

@@ -6,13 +6,12 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.betlive.front.domain.Bet;
-import com.betlive.front.domain.Betslip;
-import com.betlive.front.domain.Type;
-import com.betlive.front.domain.User;
+import com.betlive.front.domain.*;
+import com.vaadin.flow.templatemodel.BeanModelType;
 import org.atmosphere.inject.annotation.ApplicationScoped;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class JsonService {
     private WebTarget targetBetslip;
     private WebTarget targetAddBetslip;
     private WebTarget targetBet;
-    private WebTarget targetTicket;
+    private WebTarget targetUserTicket;
     private WebTarget targetType;
     private WebTarget targetUser;
 
@@ -58,6 +57,15 @@ public class JsonService {
         return  response.readEntity(Type.class);
     }
 
+    public Betslip findBetslip(int betslipId) {
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/betslip/getBetslip")
+                .queryParam("betslipId",1);
+        return  targetAddBetslip.request(MediaType.APPLICATION_JSON)
+                .get(Betslip.class);
+
+    }
+
     public List<Bet> getAllBets() {
         return  targetBet.request(MediaType.APPLICATION_JSON)
                 .get(Response.class)
@@ -82,8 +90,63 @@ public class JsonService {
     public List<User> getAllUsers() {
         return  targetUser.request(MediaType.APPLICATION_JSON)
                 .get(Response.class)
-                .readEntity(new GenericType<List<User>>() {
+                .readEntity(new GenericType<>() {
                 });
+
+    }
+
+    public void makeDeposit(BigDecimal ammount, int userId) {
+        clientPost = ClientBuilder.newClient();
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/user/makeDeposit")
+                .queryParam("userId",userId)
+                .queryParam("ammount", ammount);
+        Invocation.Builder invocationBuilder =  targetAddBetslip.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.put(Entity.entity(User.class, MediaType.APPLICATION_JSON));
+
+        System.out.println(response.getEntity());
+
+    }
+
+    public void withdrawMoney(BigDecimal ammount, int userId) {
+        clientPost = ClientBuilder.newClient();
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/user/withdrawMoney")
+                .queryParam("userId",userId)
+                .queryParam("ammount", ammount);
+        Invocation.Builder invocationBuilder =  targetAddBetslip.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.put(Entity.entity(User.class, MediaType.APPLICATION_JSON));
+
+        System.out.println(response.getEntity());
+
+    }
+
+    public List<Ticket> getAllUserTickets(int userId) {
+        targetUserTicket = client.target(
+                "http://localhost:8080/v1/tickets/getUserTickets").queryParam("userId",userId);
+        return  targetUserTicket.request(MediaType.APPLICATION_JSON)
+                .get(Response.class)
+                .readEntity(new GenericType<List<Ticket>>() {
+                });
+
+    }
+
+    public Ticket createTicket(int betslipId) {
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/betslip/createTicket")
+                .queryParam("betslipId",betslipId);
+        Invocation.Builder invocationBuilder =  targetAddBetslip.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.post(Entity.entity(Ticket.class, MediaType.APPLICATION_JSON));
+
+        return  response.readEntity(Ticket.class);
+    }
+
+    public Betslip createAndSaveBetslip(Betslip betslip) {
+        targetType = client.target(
+                "http://localhost:8080/v1/betslip/saveBetslip");
+        Invocation.Builder invocationBuilder =  targetType.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.post(Entity.entity(betslip, MediaType.APPLICATION_JSON));
+        return  response.readEntity(Betslip.class);
 
     }
 }

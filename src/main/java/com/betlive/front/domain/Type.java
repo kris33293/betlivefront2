@@ -2,6 +2,7 @@ package com.betlive.front.domain;
 
 import java.util.Set;
 
+
 public class Type {
 
     int typeId;
@@ -12,6 +13,9 @@ public class Type {
     String yourType;
     Set<Betslip> betslips;
     Set<Ticket> tickets;
+
+    public Type() {
+    }
 
     public int getTypeId() {
         return typeId;
