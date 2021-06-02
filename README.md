@@ -1,5 +1,5 @@
 # BetLive
-Link do front-end: https://github.com/kris33293/betlivefront2
+Link do back-end: https://github.com/kris33293/BetLive/
 
 Dwa przyciski u gory - nawigacja
 
