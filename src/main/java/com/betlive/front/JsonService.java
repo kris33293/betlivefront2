@@ -12,6 +12,7 @@ import org.atmosphere.inject.annotation.ApplicationScoped;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -149,4 +150,41 @@ public class JsonService {
         return  response.readEntity(Betslip.class);
 
     }
+
+    public void saveMatches() {
+        clientPost = ClientBuilder.newClient();
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/bet/savePremierleagueMatches");
+        Invocation.Builder invocationBuilder =  targetAddBetslip.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.post(Entity.entity(Bet.class, MediaType.APPLICATION_JSON));
+
+        System.out.println(response.getEntity());
+
+    }
+    public void deleteMatches() {
+        clientPost = ClientBuilder.newClient();
+        targetAddBetslip = clientPost.target(
+                "http://localhost:8080/v1/bet/deleteAllBets");
+        Invocation.Builder invocationBuilder =  targetAddBetslip.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.delete();
+
+        System.out.println(response.getEntity());
+
+    }
+
+    public User createUser() {
+        User createdUser = new User();
+        createdUser.setUserId(1);
+        createdUser.setBalance(new BigDecimal(150));
+        createdUser.setUserName("FIRST USER");
+        createdUser.setTickets(new ArrayList<>());
+        createdUser.setBetslips(new ArrayList<>());
+        targetType = client.target(
+                "http://localhost:8080/v1/user/createUser");
+        Invocation.Builder invocationBuilder =  targetType.request(MediaType.APPLICATION_JSON);
+        Response response = invocationBuilder.post(Entity.entity(createdUser, MediaType.APPLICATION_JSON));
+        return  response.readEntity(User.class);
+    }
+
+
 }

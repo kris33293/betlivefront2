@@ -12,6 +12,7 @@ import com.vaadin.flow.router.Route;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -92,6 +93,7 @@ public class VaadinUI extends VerticalLayout {
     private Grid<Ticket> userTicketsGrid = new Grid<>();
 
     private int typeId,userId;
+    private int a=0;
     private String homeTeam,awayTeam,eventDate;
     private Double oddDraw,oddHome,oddAway;
 
@@ -105,6 +107,13 @@ public class VaadinUI extends VerticalLayout {
 
     public VaadinUI(JsonService service) {
     this.service = service;
+
+        if (a==0){
+            service.createUser();
+            a++;
+        }
+
+
 
         userLayout.setVisible(false);
         userGrid.addColumn(user1 -> user1.getUserName()).setFlexGrow(1).setHeader("Username");
@@ -160,7 +169,7 @@ public class VaadinUI extends VerticalLayout {
         }) ;
 
 
-     //   betslip.setItems(service.getAllTypesFromBetslip());
+     // type.setItems(service.getAllTypesFromBetslip());
         userGrid.setItems(service.getAllUsers());
         bets.setItems(service.getAllBets());
         add(barLayout,bets,typeGrid,type,userGrid,userLayout,userTicketsGrid);
@@ -179,12 +188,20 @@ public class VaadinUI extends VerticalLayout {
     }
 
     private void showBets(ClickEvent clickEvent) {
+        refreshMatces();
+
         bets.setVisible(true);
         type.setVisible(true);
         typeGrid.setVisible(true);
         userGrid.setVisible(false);
         userTicketsGrid.setVisible(false);
         userLayout.setVisible(false);
+    }
+
+    private void refreshMatces() {
+        service.deleteMatches();
+        service.saveMatches();
+        bets.setItems(service.getAllBets());
     }
 
     private void away(ClickEvent<Button> buttonClickEvent) {
